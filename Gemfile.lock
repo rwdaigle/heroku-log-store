@@ -24,15 +24,19 @@ GEM
     http_parser.rb (0.5.3)
     log4r (1.1.10)
     multi_json (1.5.0)
+    pg (0.14.1)
     rack (1.4.1)
     rack-accept-media-types (0.9)
     rack-contrib (1.1.0)
       rack (>= 0.9.1)
     rack-respond_to (0.9.8)
       rack-accept-media-types (>= 0.6)
+    sequel (3.42.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   goliath
+  pg
+  sequel
