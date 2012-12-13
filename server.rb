@@ -1,13 +1,15 @@
 require 'bundler/setup'
 Bundler.require
 
-DB = Sequel.connect(ENV['DATABASE_URL'] || "postgres://localhost/clorox")
+DB = Sequel.connect(ENV['DATABASE_URL'] || "postgres://localhost/clorox",
+  :max_connections => ENV['MAX_DB_CONNECTIONS'] ? ENV['MAX_DB_CONNECTIONS'].to_i : 4
+)
 DB.extension :pg_hstore
 
 class Hello < Goliath::API
   def response(env)
     DB[:events].insert([:emitted_at, :received_at, :data], [Time.now.utc, Time.now.utc, {'key' => 'value', 'at' => 'event-start'}.hstore])
-    [200, {}, DB[:events]]
+    [200, {}, DB[:events].order(:id).reverse.limit(25).collect { |r| r[:id] }.join(', ')]
   end
 end
 
