@@ -19,6 +19,7 @@ class Parsley
     @data = data
   end
 
+  # http://tools.ietf.org/html/rfc5424#page-8
   # frame <prority>version time hostname <appname-missing> procid msgid [structured data] msg
   # 120 <40>1 2012-11-30T06:45:29+00:00 heroku web.3 d.73ea7440-270a-435a-a0ea-adf50b4e5f5a - State changed from starting to up
   def lines(&block)
@@ -70,16 +71,21 @@ __END__
 
 CREATE EXTENSION hstore;
 
+// <prority>version time hostname <appname-missing> procid msgid [structured data] msg
+
 CREATE table events (
   id SERIAL8 PRIMARY KEY,
   emitted_at TIMESTAMP WITH TIME ZONE,
   received_at TIMESTAMP WITH TIME ZONE,
-  data HSTORE
+  syslog_version INTEGER,
+  hostname CHARACTER(255),
+  appname CHARACTER(48),
+  procid CHARACTER(128),
+  msgid CHARACTER(32)
+  msg TEXT
 );
 
 CREATE INDEX events_emitted_at ON events(emitted_at);
-CREATE INDEX events_received_at ON events(received_at);
-CREATE INDEX events_data ON events USING GIN(data);
 
 https://github.com/jzimmek/em-postgresql-sequel
 https://github.com/levicook/goliath-postgres-spike
