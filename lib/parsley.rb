@@ -4,6 +4,7 @@ module Parsley
 
   SyslogKeys = :priority, :syslog_version, :emitted_at, :hostname, :appname, :proc_id, :msg_id, :structured_data, :message
 
+  # Never done this before, doesn't feel very good
   def self.parser(flavor = :heroku)
     require "flavors/#{flavor.to_s}"
     constantize("Parsley::Flavors::#{flavor.to_s.capitalize}")
@@ -13,15 +14,8 @@ module Parsley
   # Parsley.parser(:heroku).new(syslog_str)
   class Parser
 
-    attr_reader :data
-
-    # TODO: make stateless
-    def initialize(data)
-      @data = data
-    end
-
-    def events(&block)
-      lines do |line|
+    def events(data_str, &block)
+      lines(data_str) do |line|
         if(matching = line.match(line_regex))
           yield event_data(matching)
         end
@@ -37,8 +31,8 @@ module Parsley
     end
 
     # Break a given packet into individual syslog messages. Default assumes one message per packet
-    def lines(&block)
-      yield data
+    def lines(data_str, &block)
+      yield data_str
     end
 
     # Default is to assume simple sequential matching

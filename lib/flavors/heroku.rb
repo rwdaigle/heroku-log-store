@@ -22,14 +22,14 @@ module Parsley
       #
       # I am still uncertain if this is the place for transport layer protocol handling. I suspect not.
       #
-      def lines(&block)
-        d = data
+      def lines(data_str, &block)
+        d = data_str
         while d && d.length > 0
           if matching = d.match(/^(\d+) /) # if have a counting frame, use it
             num_bytes = matching[1].to_i
             frame_offset = matching[0].length
             line_end = frame_offset + num_bytes
-            msg = data[frame_offset..line_end]
+            msg = d[frame_offset..line_end]
             yield msg
             d = d[line_end..d.length]
           elsif matching = d.match(/\n/) # Newlines = explicit message delimiter

@@ -10,13 +10,14 @@ DB = Sequel.connect(ENV['DATABASE_URL'] || "postgres://localhost/clorox",
 )
 DB.extension :pg_hstore
 
+LogParser = Parsley.parser(:heroku).new
+
 class CloroxServer < Goliath::API
 
   def response(env)
 
     if(env[Goliath::Request::REQUEST_METHOD] == 'POST')
-      parsley = Parsley.parser(:heroku).new(env[Goliath::Request::RACK_INPUT].read)
-      parsley.events do |event|
+      LogParser.events(env[Goliath::Request::RACK_INPUT].read) do |event|
         DB[:events].insert(
           Parsley::SyslogKeys,
           Parsley::SyslogKeys.collect { |k| event[k] }
