@@ -1,5 +1,3 @@
-$LOAD_PATH << File.expand_path('./flavors', __FILE__)
-
 module Parsley
 
   SyslogKeys = :priority, :syslog_version, :emitted_at, :hostname, :appname, :proc_id, :msg_id, :structured_data, :message
@@ -36,19 +34,20 @@ module Parsley
     end
 
     # Default is to assume simple sequential matching
-    def event_data(matching)
-      event = {}
-      event[:priority] = matching[1].to_i
-      event[:syslog_version] = matching[2].to_i
-      event[:emitted_at] = nil?(matching[3]) ? nil : Time.parse(matching[3]).utc
-      event[:hostname] = interpret_nil(matching[4])
-      event[:appname] = interpret_nil(matching[5])
-      event[:proc_id] = interpret_nil(matching[6])
-      event[:msg_id] = interpret_nil(matching[7])
-      event[:structured_data] = interpret_nil(matching[8])
-      event[:message] = interpret_nil(matching[9])
-      event
-    end
+    # Comment out until it's actually used
+    # def event_data(matching)
+    #   event = {}
+    #   event[:priority] = matching[1].to_i
+    #   event[:syslog_version] = matching[2].to_i
+    #   event[:emitted_at] = nil?(matching[3]) ? nil : Time.parse(matching[3]).utc
+    #   event[:hostname] = interpret_nil(matching[4])
+    #   event[:appname] = interpret_nil(matching[5])
+    #   event[:proc_id] = interpret_nil(matching[6])
+    #   event[:msg_id] = interpret_nil(matching[7])
+    #   event[:structured_data] = interpret_nil(matching[8])
+    #   event[:message] = interpret_nil(matching[9])
+    #   event
+    # end
 
     def interpret_nil(val)
       nil?(val) ? nil : val
@@ -60,6 +59,7 @@ module Parsley
   end
 
   # Taken from ActiveSupport::Inflector: http://apidock.com/rails/v3.2.8/ActiveSupport/Inflector/constantize
+  # Hate that this is here - how do others do dynamic loading?
   def self.constantize(camel_cased_word)
     names = camel_cased_word.split('::')
     names.shift if names.empty? || names.first.empty?
