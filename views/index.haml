@@ -1,0 +1,60 @@
+%html
+
+  %h2 Clorox
+  %p
+    Welcome to your personal instance of
+    %a(href="https://github.com/rwdaigle/clorox") Clorox - the HTTP-based log drain.
+
+  - if !protected
+
+    - username, password = "u#{(rand() * 10000).to_i}", SecureRandom.hex
+
+    %h3 Configuration
+    %p
+      Now that your app is deployed, you need to setup authorization using HTTP basic auth. I've randomly generated
+      a username and password for you:
+    %p
+      %b username:
+      #{username}
+      %br/
+      %b password:
+      #{password}
+    %p
+      To set these credentials on your Heroku app, do the following from the command line:
+    %pre
+      %code
+        $ heroku config:set HTTP_AUTH_USER=#{username} HTTP_AUTH_PASSWORD=#{password}
+    %p If you ever forget your credentials you can always retrieve them from the Heroku app config:
+    %pre
+      %code
+        $ heroku config | grep HTTP_AUTH
+    %p Once you set the credentials Heroku will restart the app.
+    %p
+      %b Refresh the page to see further instrucions.
+
+  - else
+
+    - drain_url = "https://#{username}:#{password}@#{env['HTTP_HOST']}/drain"
+
+    - if event_count > 0
+
+      %h3 Configuration
+      %p
+        Your log drain URL is:
+        %b #{drain_url}
+      %p To capture and store the logs for an app on Heroku set this Clorox instance to be a log drain for the source app.
+      %pre
+        %code
+          $ heroku drains:add #{drain_url} -a source-app
+
+    %h3 Captured logs
+    %p Clorox has captured #{event_count} syslog messages.
+    %p To query your logs use the Postgres shell. Log data is stored in the "events" table.
+    %pre
+      %code
+        $ heroku pg:psql -a my-log-drain
+
+        123abc=> SELECT id, emitted_at, proc_id, message FROM events ORDER BY emitted_at DESC LIMIT 1;
+        id|       emitted_at       | proc_id |                                message                                
+        --+------------------------+---------+-----------------------------------------------------------------------
+        1 | 2012-11-30 01:45:26-05 | web.3     | Starting process with command `bundle exec rackup config.ru -p 24405`

@@ -6,4 +6,6 @@ gem 'goliath'
 gem 'sequel'
 gem 'pg'
 
+gem 'tilt'
+gem 'haml'
 gem 'parsley', :git => "git@github.com:rwdaigle/parsley.git"
