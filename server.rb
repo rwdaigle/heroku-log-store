@@ -9,13 +9,13 @@ DB.extension :pg_hstore
 
 class Parsley
 
-  LineRe = /\<\d+\>1 (\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+00:00) [a-z0-9-]+ ([a-z0-9\-\_\.]+) ([a-z0-9\-\_\.]+) \- (.*)$/
+  LineRe = /\<(\d+)\>(1) (\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+00:00) ([a-z0-9-]+) ([a-z0-9\-\_\.]+) ([a-z0-9\-\_\.]+) \- (.*)$/
 
   attr_reader :data
-  attr_accessor :format
+  attr_accessor :flavor
 
-  def initialize(data, format = :heroku)
-    self.format = format
+  def initialize(data, flavor = :heroku)
+    self.flavor = flavor
     @data = data
   end
 
@@ -36,6 +36,7 @@ class Parsley
         d = matching.post_match
       else
         STDERR.puts("Unable to parse: #{d}")
+        return
       end
     end
   end
@@ -43,9 +44,31 @@ class Parsley
   def events(&block)
     lines do |line|
       if(matching = line.match(LineRe))
-        yield Time.parse(matching[1]).utc, matching[2], matching[3], matching[4]
+        yield event_data(matching)
       end
     end
+  end
+
+  def event_data(matching)
+    event = {}
+    event[:priority] = matching[1].to_i
+    event[:syslog_version] = matching[2].to_i
+    event[:emitted_at] = nil?(matching[3]) ? nil : Time.parse(matching[3]).utc
+    event[:hostname] = interpret_nil(matching[4])
+    event[:appname] = nil
+    event[:proc_id] = interpret_nil(matching[5])
+    event[:msg_id] = interpret_nil(matching[6])
+    event[:structured_data] = nil
+    event[:message] = interpret_nil(matching[7])
+    event
+  end
+
+  def interpret_nil(val)
+    nil?(val) ? nil : val
+  end
+
+  def nil?(val)
+    val == "-"
   end
 end
 
@@ -55,8 +78,8 @@ class CloroxServer < Goliath::API
 
     if(env[Goliath::Request::REQUEST_METHOD] == 'POST')
       parsley = Parsley.new(env[Goliath::Request::RACK_INPUT].read)
-      parsley.events do |emitted_at, process, drain_token, data|
-        STDOUT.puts(emitted_at.to_s + " -- " + data)
+      parsley.events do |event|
+        STDOUT.puts(event[:emitted_at].to_s + " -- " + event[:message])
       end
     end
 
@@ -81,8 +104,11 @@ CREATE table events (
   hostname CHARACTER(255),
   appname CHARACTER(48),
   procid CHARACTER(128),
-  msgid CHARACTER(32)
-  msg TEXT
+  msgid CHARACTER(32),
+  structured_data_str TEXT,
+  structured_data HSTORE,
+  msg_str TEXT,
+  msg_data HSTORE
 );
 
 CREATE INDEX events_emitted_at ON events(emitted_at);
