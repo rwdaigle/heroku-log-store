@@ -1,3 +1,9 @@
+GIT
+  remote: git@github.com:rwdaigle/parsley.git
+  revision: a3da5a8b606120def8288c594a4050b8c74ae579
+  specs:
+    parsley (0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -38,5 +44,6 @@ PLATFORMS
 
 DEPENDENCIES
   goliath
+  parsley!
   pg
   sequel
