@@ -48,7 +48,10 @@
           $ heroku drains:add #{drain_url} -a source-app
 
     %h3 Captured logs
-    %p Clorox has captured #{event_count} syslog messages.
+    %p
+      Clorox has captured
+      %b #{event_count}
+      syslog messages.
     %p To query your logs use the Postgres shell. Log data is stored in the "events" table.
     %pre
       %code
