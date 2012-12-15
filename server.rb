@@ -1,12 +1,12 @@
 require './config'
 require 'goliath/rack/templates'
 
-class CloroxServer < Goliath::API
+class HerokuLogDrain < Goliath::API
 
   include Goliath::Rack::Templates
 
   # If we've explicitly set auth, check for it. Otherwise, buyer-beware!
-  use Rack::Auth::Basic, "Clorox log drain" do |username, password|
+  use Rack::Auth::Basic, "Heroku Log Drain" do |username, password|
     protected? ? authorized?(username, password) : true
   end
 
