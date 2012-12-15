@@ -29,7 +29,6 @@ class CloroxServer < Goliath::API
 
   def store_log(log_str)
     LOG_PARSER.events(log_str) do |event|
-      STDOUT.puts(event.inspect)
       DB[:events].insert(
         Parsley::SYSLOG_KEYS,
         Parsley::SYSLOG_KEYS.collect { |k| event[k] }
