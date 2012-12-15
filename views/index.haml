@@ -59,7 +59,7 @@
       %code
         $ heroku pg:psql -a my-log-drain
 
-        123abc=> SELECT id, emitted_at, proc_id, message FROM events ORDER BY emitted_at DESC LIMIT 1;
-        id|       emitted_at       | proc_id |                                message                                
-        --+------------------------+---------+-----------------------------------------------------------------------
-        1 | 2012-11-30 01:45:26-05 | web.3     | Starting process with command `bundle exec rackup config.ru -p 24405`
+        123abc=> SELECT proc_id, message FROM events ORDER BY received_at DESC LIMIT 1;
+        | proc_id |                                message                                
+        +---------+-----------------------------------------------------------------------
+        | web.3   | Starting process with command `bundle exec rackup config.ru -p 24405`
