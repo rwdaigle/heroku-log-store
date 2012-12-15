@@ -1,9 +1,9 @@
 %html
 
-  %h2 Clorox
+  %h2 heroku-log-drain
   %p
     Welcome to your personal instance of
-    %a(href="https://github.com/rwdaigle/clorox") Clorox - the HTTP-based log drain.
+    %a(href="https://github.com/rwdaigle/heroku-log-drain") heroku-log-drain - the HTTP-based log drain.
 
   - if !protected
 
@@ -43,14 +43,14 @@
       %p
         Your log drain URL is:
         %b #{drain_url}
-      %p To capture and store the logs for an app on Heroku set this Clorox instance to be a log drain for the source app.
+      %p To capture and store the logs for an app on Heroku set this heroku-log-drain instance to be a log drain for the source app.
       %pre
         %code
           $ heroku drains:add #{drain_url} -a source-app
 
     %h3 Captured logs
     %p
-      Clorox has captured
+      heroku-log-drain has captured
       %b #{event_count}
       syslog messages to its drain at:
       %b #{drain_url}
