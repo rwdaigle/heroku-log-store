@@ -30,13 +30,14 @@
         $ heroku config | grep HTTP_AUTH
     %p Once you set the credentials Heroku will restart the app.
     %p
-      %b Refresh the page to see further instrucions.
+      %b Refresh the page to see further instrucions
+      You will need these credentials to login this time when asked for your username and password. 
 
   - else
 
     - drain_url = "https://#{username}:#{password}@#{env['HTTP_HOST']}/drain"
 
-    - if event_count > 0
+    - if event_count <= 0
 
       %h3 Configuration
       %p
@@ -51,7 +52,8 @@
     %p
       Clorox has captured
       %b #{event_count}
-      syslog messages.
+      syslog messages to its drain at:
+      %b #{drain_url}
     %p To query your logs use the Postgres shell. Log data is stored in the "events" table.
     %pre
       %code
