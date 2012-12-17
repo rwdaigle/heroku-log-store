@@ -34,6 +34,10 @@ class HerokuLogDrain < Goliath::API
     DB[:events].multi_insert(event_data, :commit_every => 10)
   end
 
+  def self.protected?
+    ['HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD'].any? { |v| !ENV[v].nil? && ENV[v] != '' }
+  end
+
   def self.authorized?(u, p)
     [u, p] == [ENV['HTTP_AUTH_USER'], ENV['HTTP_AUTH_PASSWORD']]
   end
