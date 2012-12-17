@@ -6,8 +6,10 @@ class HerokuLogDrain < Goliath::API
   include Goliath::Rack::Templates
 
   # If we've explicitly set auth, check for it. Otherwise, buyer-beware!
-  use Rack::Auth::Basic, "Heroku Log Drain" do |username, password|
-    protected? ? authorized?(username, password) : true
+  if protected?
+    use Rack::Auth::Basic, "Heroku Log Store" do |username, password|
+      authorized?(username, password)
+    end
   end
 
   def response(env)
