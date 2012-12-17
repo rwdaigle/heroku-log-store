@@ -1,1 +1,1 @@
-rvm use ruby-1.9.3@heroku-log-drain --create
+rvm use ruby-1.9.3@heroku-log-store --create
