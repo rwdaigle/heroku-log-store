@@ -6,7 +6,7 @@ class HerokuLogDrain < Goliath::API
   include Goliath::Rack::Templates
 
   # If we've explicitly set auth, check for it. Otherwise, buyer-beware!
-  if protected?
+  if(['HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD'].any? { |v| !ENV[v].nil? && ENV[v] != '' })
     use Rack::Auth::Basic, "Heroku Log Store" do |username, password|
       authorized?(username, password)
     end
@@ -32,10 +32,6 @@ class HerokuLogDrain < Goliath::API
   def store_log(log_str)
     event_data = HerokuLogParser.parse(log_str)
     DB[:events].multi_insert(event_data, :commit_every => 10)
-  end
-
-  def self.protected?
-    ['HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD'].any? { |v| !ENV[v].nil? && ENV[v] != '' }
   end
 
   def self.authorized?(u, p)
