@@ -1,8 +1,8 @@
 GIT
-  remote: git://github.com/rwdaigle/parsley.git
-  revision: 8ee0dbe257a4e9d98b5b0560632a5fbd99c84585
+  remote: git://github.com/rwdaigle/heroku-log-parser.git
+  revision: 2d73552940638e78d8accbcdd98506015e6be809
   specs:
-    parsley (0.1)
+    heroku-log-parser (0.2)
 
 GEM
   remote: https://rubygems.org/
@@ -47,7 +47,7 @@ PLATFORMS
 DEPENDENCIES
   goliath
   haml
-  parsley!
+  heroku-log-parser!
   pg
   sequel
   tilt

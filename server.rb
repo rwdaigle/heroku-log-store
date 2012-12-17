@@ -28,12 +28,8 @@ class HerokuLogDrain < Goliath::API
   private
 
   def store_log(log_str)
-    LOG_PARSER.events(log_str) do |event|
-      DB[:events].insert(
-        Parsley::SYSLOG_KEYS,
-        Parsley::SYSLOG_KEYS.collect { |k| event[k] }
-      )
-    end
+    event_data = HerokuLogParser.parse(log_str)
+    DB[:events].multi_insert(event_data, :commit_every => 10)
   end
 
   def self.protected?

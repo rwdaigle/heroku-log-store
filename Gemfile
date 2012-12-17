@@ -8,4 +8,4 @@ gem 'pg'
 
 gem 'tilt'
 gem 'haml'
-gem 'parsley', :git => "git://github.com/rwdaigle/parsley.git"
+gem 'heroku-log-parser', :git => "git://github.com/rwdaigle/heroku-log-parser.git"
