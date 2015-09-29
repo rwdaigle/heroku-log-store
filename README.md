@@ -17,16 +17,16 @@ Github issue tracker.
 To have heroku-log-store store your logs, deploy an instance of heroku-log-store to Heroku. Yes, a log-drain app on Heroku, draining logs from another app on Heroku. Just don't create a circular reference or else the universe might rip.
 
 *Note:* This assumes you have the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed locally.
-Also, these steps install the `dev` [heroku-postgresql](https://addons.heroku.com/heroku-postgresql) add-on which
+Also, these steps install the `Hobby Dev` [heroku-postgresql](https://addons.heroku.com/heroku-postgresql) add-on which
 is limited to 10K rows. This is not a lot of capacity as logs can be quite chatty. It is recommended that you use at least
-the `basic` postgres database. If you want to do this just specify `heroku-postgresql:basic` below instead.
+the `Hobby Basic` postgres database. If you want to do this just specify `heroku-postgresql:hobby-basic` below instead.
 
 ```term
 $ git clone git://github.com/rwdaigle/heroku-log-store.git
 $ cd heroku-log-store
 $ heroku create log-store
 $ heroku config:set RACK_ENV=production
-$ heroku addons:add heroku-postgresql:dev
+$ heroku addons:create heroku-postgresql:hobby-dev
 $ git push heroku master
 ```
 Your drain should now be deployed and running on Heroku, although it will need to be configured before use.
