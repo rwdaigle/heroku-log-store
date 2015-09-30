@@ -3,8 +3,6 @@ Sequel.migration do
 
   up do
     run <<-EOS
-      CREATE EXTENSION IF NOT EXISTS hstore;
-
       CREATE table events (
         id SERIAL8 PRIMARY KEY,
         emitted_at TIMESTAMP WITH TIME ZONE,
