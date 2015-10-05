@@ -29,8 +29,13 @@ class HerokuLogDrain < Goliath::API
 
   private
 
+  def known_keys
+    @known_keys = [:id, :emitted_at, :received_at, :priority, :syslog_version, :hostname, :appname, :proc_id, :msg_id, :structured_data, :message]
+  end
+  
   def store_log(log_str)
     event_data = HerokuLogParser.parse(log_str)
+    event_data = event_data.map{|h| h.select {|k, v| known_keys.include?(k)} }
     DB[:events].multi_insert(event_data, :commit_every => 10)
   end
 
