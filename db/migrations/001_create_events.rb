@@ -9,12 +9,12 @@ Sequel.migration do
         id SERIAL8 PRIMARY KEY,
         emitted_at TIMESTAMP WITH TIME ZONE,
         received_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        priority INTEGER,
-        syslog_version INTEGER,
-        hostname CHARACTER(255),
-        appname CHARACTER(255),
-        proc_id CHARACTER(255),
-        msg_id CHARACTER(255),
+        priority SMALLINT,
+        syslog_version SMALLINT,
+        hostname TEXT,
+        appname TEXT,
+        proc_id TEXT,
+        msg_id TEXT,
         structured_data TEXT,
         message TEXT
       );
