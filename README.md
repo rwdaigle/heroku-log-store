@@ -87,12 +87,12 @@ The `events` table is where the goods are. Here is its schema:
  id              | bigint                   | not null default nextval('events_id_seq'::regclass)
  emitted_at      | timestamp with time zone | 
  received_at     | timestamp with time zone | default now()
- priority        | integer                  | 
- syslog_version  | integer                  | 
- hostname        | character(255)           | 
- appname         | character(255)           | 
- proc_id         | character(255)           | 
- msg_id          | character(255)           | 
+ priority        | smallint                 | 
+ syslog_version  | smallint                 | 
+ hostname        | text                     | 
+ appname         | text                     | 
+ proc_id         | text                     | 
+ msg_id          | text                     | 
  structured_data | text                     | 
  message         | text                     | 
 Indexes:
