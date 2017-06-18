@@ -16,10 +16,15 @@ Sequel.migration do
         proc_id CHARACTER(255),
         msg_id CHARACTER(255),
         structured_data TEXT,
-        message TEXT
+        message TEXT,
+        original TEXT
       );
 
       CREATE INDEX events_emitted_at ON events(emitted_at);
+      CREATE INDEX events_proc_id ON events(proc_id);
+      CREATE INDEX events_appname ON events(appname);
+      CREATE INDEX events_received_at ON events(received_at);
+
     EOS
   end
 

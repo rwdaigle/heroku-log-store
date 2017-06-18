@@ -1,9 +1,15 @@
+require 'logger'
 require './config'
 require 'goliath/rack/templates'
 
 class HerokuLogDrain < Goliath::API
 
   include Goliath::Rack::Templates
+
+  def initialize(opts = {})
+    @opts = opts
+    @logger = Logger.new(STDOUT)
+  end
 
   # If we've explicitly set auth, check for it. Otherwise, buyer-beware!
   if(['HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD'].any? { |v| !ENV[v].nil? && ENV[v] != '' })
@@ -24,13 +30,14 @@ class HerokuLogDrain < Goliath::API
       })]
     else
       raise Goliath::Validation::NotFoundError
-    end    
+    end
   end
 
   private
 
   def store_log(log_str)
     event_data = HerokuLogParser.parse(log_str)
+    @logger.info "event data: #{event_data.inspect}"
     DB[:events].multi_insert(event_data, :commit_every => 10)
   end
 
